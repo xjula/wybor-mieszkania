@@ -1,0 +1,1 @@
+{"name":"wybor-mieszkania","version":"0.2.0","private":true,"engines":{"node":">=22"},"scripts":{"start":"node --env-file-if-exists=.env server/index.js","dev":"node --env-file-if-exists=.env --watch server/index.js","test":"node --test tests/ranking.test.js","test:db":"node --env-file-if-exists=.env --test tests/database.test.js"},"dependencies":{"pg":"8.13.1"}}

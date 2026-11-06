@@ -1,0 +1,29 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: mieszkania
+      POSTGRES_USER: mieszkania
+      POSTGRES_PASSWORD: mieszkania_dev
+    ports:
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - mieszkania_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mieszkania -d mieszkania"]
+      interval: 3s
+      timeout: 3s
+      retries: 15
+  app:
+    build: .
+    environment:
+      DATABASE_URL: postgresql://mieszkania:mieszkania_dev@db:5432/mieszkania
+      HOST: 0.0.0.0
+      PORT: 3000
+    ports:
+      - "127.0.0.1:3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+volumes:
+  mieszkania_data:
