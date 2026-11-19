@@ -3,7 +3,7 @@ import { Header } from "./components/layout/Header";
 import { Footer } from "./components/layout/Footer";
 import { SearchBar } from "./components/search/SearchBar";
 import { OfferList } from "./components/offers/OfferList";
-import { OfferForm } from "./components/offers/OfferForm";
+import { blankOffer, OfferForm } from "./components/offers/OfferForm";
 import { RankingList } from "./components/ranking/RankingList";
 import { Modal } from "./components/ui/Modal";
 import { TabSwitch } from "./components/ui/TabSwitch";
@@ -16,8 +16,7 @@ const TABS = [
   ["ranking", "Ranking SAW"],
 ];
 
-const blankOffer = { name: "", location: "", price: "", minutes: "" };
-const emptyQuery = { location: "", max: "", time: "" };
+const emptyQuery = { location: "", max: "", minArea: "", floor: "", minRooms: "" };
 
 export default function App() {
   const [state, setState] = useState(null);
@@ -74,7 +73,15 @@ export default function App() {
   function openEditOffer(o) {
     setError("");
     setEditId(o.id);
-    setOffer({ name: o.name, location: o.location || "", price: o.price, minutes: o.minutes });
+    setOffer({
+      name: o.name,
+      location: o.location || "",
+      price: o.price,
+      minutes: o.minutes,
+      area_m2: o.area_m2 ?? "",
+      floor: o.floor ?? "",
+      rooms: o.rooms ?? "",
+    });
     setModal("offer");
   }
 
@@ -109,11 +116,13 @@ export default function App() {
         editId === null ? "offers" : "offers/" + editId,
         editId === null ? "POST" : "PUT",
         {
-          ...offer,
           name: offer.name.trim(),
           location: offer.location.trim(),
           price: Number(offer.price),
           minutes: Number(offer.minutes),
+          area_m2: offer.area_m2 !== "" ? Number(offer.area_m2) : null,
+          floor:   offer.floor   !== "" ? Number(offer.floor)   : null,
+          rooms:   offer.rooms   !== "" ? Number(offer.rooms)   : null,
         },
       );
       await load();

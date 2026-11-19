@@ -5,11 +5,14 @@ from .ranking import evaluate
 from .store import PostgresStore
 
 class Offer(BaseModel):
-    model_config = ConfigDict(str_strip_whitespace=True, extra="forbid", strict=True)
+    model_config = ConfigDict(str_strip_whitespace=True, extra="forbid", strict=False)
     name: str = Field(min_length=1, max_length=80)
     price: int = Field(ge=1, le=9_999_999_999)
     location: str = Field(default="", max_length=120)
     minutes: int = Field(ge=0, le=1440)
+    area_m2: float | None = Field(default=None, gt=0)
+    floor: int | None = Field(default=None, ge=-2, le=200)
+    rooms: int | None = Field(default=None, ge=1, le=20)
 
 class Preferences(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True)

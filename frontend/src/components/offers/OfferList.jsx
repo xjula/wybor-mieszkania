@@ -7,20 +7,18 @@ import { cash, fold } from "../../utils/format";
  *
  * @param {{ offers: object[], query: object, busy: boolean, onEdit: fn, onDelete: fn, onClearQuery: fn }} props
  */
-export function OfferList({
-  offers,
-  query,
-  busy,
-  onEdit,
-  onDelete,
-  onClearQuery,
-}) {
-  const view = (offers || []).filter(
-    (o) =>
-      fold(o.location).includes(fold(query.location.trim())) &&
-      (!query.max || o.price <= Number(query.max)) &&
-      (!query.time || o.minutes <= Number(query.time)),
-  );
+export function OfferList({ offers, query, busy, onEdit, onDelete, onClearQuery }) {
+  const view = (offers || []).filter((o) => {
+    if (query.location.trim() && !fold(o.location).includes(fold(query.location.trim()))) return false;
+    if (query.max && o.price > Number(query.max)) return false;
+    if (query.minArea && (o.area_m2 == null || o.area_m2 < Number(query.minArea))) return false;
+    if (query.floor !== "" && query.floor != null && o.floor !== Number(query.floor)) return false;
+    if (query.minRooms && (o.rooms == null || o.rooms < Number(query.minRooms))) return false;
+    return true;
+  });
+
+  const hasFilters =
+    query.location || query.max || query.minArea || query.floor !== "" || query.minRooms;
 
   return (
     <>
@@ -28,8 +26,10 @@ export function OfferList({
         {view.length} z {offers.length} ofert
         {query.location.trim() && " · " + query.location.trim()}
         {query.max && " · do " + cash(+query.max)}
-        {query.time && " · do " + query.time + " min"}{" "}
-        {(query.location || query.max || query.time) && (
+        {query.minArea && " · min. " + query.minArea + " m²"}
+        {query.floor !== "" && query.floor != null && " · " + query.floor + ". piętro"}
+        {query.minRooms && " · min. " + query.minRooms + " pok."}{" "}
+        {hasFilters && (
           <button className="link" onClick={onClearQuery}>
             Wyczyść wyszukiwanie
           </button>

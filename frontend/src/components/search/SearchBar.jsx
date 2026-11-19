@@ -2,7 +2,7 @@ import React from "react";
 import { useState } from "react";
 import { MapPin, SlidersHorizontal, Search } from "lucide-react";
 
-const initial = { location: "", max: "", time: "" };
+const initial = { location: "", max: "", minArea: "", floor: "", minRooms: "" };
 
 /**
  * Hero search section with location input, filters toggle and submit.
@@ -71,7 +71,7 @@ export function SearchBar({ onSearch }) {
 }
 
 /**
- * Collapsible filter panel (price cap + commute cap).
+ * Collapsible filter panel (price cap + area + floor + rooms).
  *
  * @param {{ draft: object, onChange: (patch: object) => void }} props
  */
@@ -88,12 +88,33 @@ export function FilterPanel({ draft, onChange }) {
         />
       </label>
       <label>
-        Dojazd do (min)
+        Powierzchnia od (m²)
         <input
           type="number"
-          min="0"
-          value={draft.time}
-          onChange={(e) => onChange({ time: e.target.value })}
+          min="1"
+          value={draft.minArea}
+          onChange={(e) => onChange({ minArea: e.target.value })}
+        />
+      </label>
+      <label>
+        Piętro
+        <input
+          type="number"
+          min="-2"
+          max="200"
+          placeholder="np. 2"
+          value={draft.floor}
+          onChange={(e) => onChange({ floor: e.target.value })}
+        />
+      </label>
+      <label>
+        Liczba pokoi (min)
+        <input
+          type="number"
+          min="1"
+          max="20"
+          value={draft.minRooms}
+          onChange={(e) => onChange({ minRooms: e.target.value })}
         />
       </label>
     </div>

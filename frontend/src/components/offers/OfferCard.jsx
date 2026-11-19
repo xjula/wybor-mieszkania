@@ -9,6 +9,12 @@ import { cash } from "../../utils/format";
  * @param {{ offer: object, busy: boolean, onEdit: (o: object) => void, onDelete: (o: object) => void }} props
  */
 export function OfferCard({ offer: o, busy, onEdit, onDelete }) {
+  const details = [
+    o.area_m2 != null && `${o.area_m2} m²`,
+    o.floor != null && `${o.floor}. piętro`,
+    o.rooms != null && `${o.rooms} pok.`,
+  ].filter(Boolean).join(" · ");
+
   return (
     <article>
       <div className="art">
@@ -22,6 +28,7 @@ export function OfferCard({ offer: o, busy, onEdit, onDelete }) {
         </small>
         <h3>{o.name}</h3>
         <strong className="price">{cash(o.price)}</strong>
+        {details && <p className="offer-details">{details}</p>}
         <p>Dojazd: {o.minutes} min</p>
         <div className="cardactions">
           <button className="link" onClick={() => onEdit(o)}>
@@ -31,7 +38,7 @@ export function OfferCard({ offer: o, busy, onEdit, onDelete }) {
             className="link"
             disabled={busy}
             onClick={() => {
-              if (confirm("Usunąć ofertę „" + o.name + '"?')) onDelete(o);
+              if (confirm("Usunąć ofertę „" + o.name + "\"?")) onDelete(o);
             }}
           >
             Usuń

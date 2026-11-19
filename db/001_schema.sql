@@ -11,3 +11,6 @@ CREATE TABLE IF NOT EXISTS offers (
   minutes integer NOT NULL CHECK(minutes BETWEEN 0 AND 1440)
 );
 ALTER TABLE offers ADD COLUMN IF NOT EXISTS location varchar(120) NOT NULL DEFAULT '';
+ALTER TABLE offers ADD COLUMN IF NOT EXISTS area_m2 numeric(7,2) CHECK(area_m2 IS NULL OR area_m2 > 0);
+ALTER TABLE offers ADD COLUMN IF NOT EXISTS floor smallint CHECK(floor IS NULL OR floor BETWEEN -2 AND 200);
+ALTER TABLE offers ADD COLUMN IF NOT EXISTS rooms smallint CHECK(rooms IS NULL OR rooms BETWEEN 1 AND 20);

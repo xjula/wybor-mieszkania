@@ -29,12 +29,21 @@ class PostgresStore:
             """).fetchone()
 
     def save_offer(self, data, offer_id=None):
-        args = (data["name"], data["price"], data["minutes"], data["location"])
+        args = (
+            data["name"], data["price"], data["minutes"], data["location"],
+            data.get("area_m2"), data.get("floor"), data.get("rooms"),
+        )
         with self.connect() as conn:
             if offer_id is None:
-                return conn.execute("INSERT INTO offers(name,price,minutes,location) VALUES(%s,%s,%s,%s) RETURNING id", args).fetchone()
-            return conn.execute("UPDATE offers SET name=%s,price=%s,minutes=%s,location=%s WHERE id=%s RETURNING id",
-                                (*args, offer_id)).fetchone()
+                return conn.execute(
+                    "INSERT INTO offers(name,price,minutes,location,area_m2,floor,rooms) "
+                    "VALUES(%s,%s,%s,%s,%s,%s,%s) RETURNING id", args
+                ).fetchone()
+            return conn.execute(
+                "UPDATE offers SET name=%s,price=%s,minutes=%s,location=%s,"
+                "area_m2=%s,floor=%s,rooms=%s WHERE id=%s RETURNING id",
+                (*args, offer_id)
+            ).fetchone()
 
     def delete_offer(self, offer_id):
         with self.connect() as conn:
